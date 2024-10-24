@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Example</title>
+    <link rel="stylesheet" href="assets/css/output.css">
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="container mx-auto mt-10">
+        <h1 class="text-3xl font-bold mb-5">User Data from API</h1>
+
+        <table class="min-w-full bg-white">
+            <thead>
+                <tr>
+                    <th class="py-2">ID</th>
+                    <th class="py-2">Name</th>
+                    <th class="py-2">Email</th>
+                </tr>
+            </thead>
+            <tbody id="userTable">
+                <!-- Data will be dynamically added here -->
+            </tbody>
+        </table>
+
+        <!-- Spinner while data is loading -->
+        <div id="loading" class="mt-5 text-center hidden">
+            <div class="spinner-border text-blue-500" role="status">
+                <span>Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/scripts.js"></script>
+</body>
+</html>
+

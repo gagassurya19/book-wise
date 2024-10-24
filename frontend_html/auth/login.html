@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Login Form Container -->
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Login to Your Account</h2>
+
+            <!-- Tab Navigation -->
+            <div class="flex justify-center mb-6">
+                <button id="mahasiswaTab" class="px-4 py-2 text-blue-500 border-b-2 border-blue-500 focus:outline-none">
+                    Mahasiswa
+                </button>
+                <button id="dosenTab" class="px-4 py-2 text-gray-500 border-b-2 border-transparent focus:outline-none">
+                    Dosen
+                </button>
+            </div>
+
+            <!-- Mahasiswa Login Form -->
+            <form id="mahasiswaForm" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username (Igracias)</label>
+                    <input type="text" id="username" name="username" required 
+                           class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="mahasiswaPassword" name="password" required
+                           class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <button type="submit" 
+                            class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Sign In as Mahasiswa
+                    </button>
+                </div>
+            </form>
+
+            <!-- Dosen Login Form (Initially Hidden) -->
+            <form id="dosenForm" class="space-y-6 hidden">
+                <div>
+                    <label for="nip" class="block text-sm font-medium text-gray-700">NIP (Nomor Induk Pegawai)</label>
+                    <input type="text" id="nip" name="nip" required 
+                           class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="dosenPassword" name="password" required
+                           class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <button type="submit" 
+                            class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Sign In as Dosen
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Get references to tabs and forms
+        const mahasiswaTab = document.getElementById('mahasiswaTab');
+        const dosenTab = document.getElementById('dosenTab');
+        const mahasiswaForm = document.getElementById('mahasiswaForm');
+        const dosenForm = document.getElementById('dosenForm');
+
+        // Add event listeners to toggle between Mahasiswa and Dosen forms
+        mahasiswaTab.addEventListener('click', function () {
+            mahasiswaForm.classList.remove('hidden');
+            dosenForm.classList.add('hidden');
+            mahasiswaTab.classList.add('text-blue-500', 'border-blue-500');
+            dosenTab.classList.remove('text-blue-500', 'border-blue-500');
+            dosenTab.classList.add('text-gray-500', 'border-transparent');
+        });
+
+        dosenTab.addEventListener('click', function () {
+            dosenForm.classList.remove('hidden');
+            mahasiswaForm.classList.add('hidden');
+            dosenTab.classList.add('text-blue-500', 'border-blue-500');
+            mahasiswaTab.classList.remove('text-blue-500', 'border-blue-500');
+            mahasiswaTab.classList.add('text-gray-500', 'border-transparent');
+        });
+
+        // Handle form submission for Mahasiswa and Dosen
+        mahasiswaForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('mahasiswaPassword').value;
+            console.log('Logging in Mahasiswa with', { username, password });
+            // Handle Mahasiswa login here (e.g., API request)
+        });
+
+        dosenForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const nip = document.getElementById('nip').value;
+            const password = document.getElementById('dosenPassword').value;
+            console.log('Logging in Dosen with', { nip, password });
+            // Handle Dosen login here (e.g., API request)
+        });
+    </script>
+
+</body>
+</html>
