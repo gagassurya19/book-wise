@@ -1,2 +1,14 @@
+# Ignore target directory
+target/
+
+# Ignore backup files
+*.bak
+*.swp
+
+# Ignore IntelliJ IDEA specific files (if using IntelliJ)
 .idea/
 
+# Ignore Maven wrapper files (if you don't want to commit them)
+.mvn/
+mvnw
+mvnw.cmd
