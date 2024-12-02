@@ -23,58 +23,59 @@ import { Cart } from "@/components/user-page/borrow/cart";
 
 // Sample book data (replace with actual fetch logic later)
 const book = {
-  "id": "1",
-  "title": "The Psychology of Money: Timeless Lessons on Wealth, Greed, and Happiness",
-  "coverImage": "https://images-na.ssl-images-amazon.com/images/I/81cpDaCJJCL.jpg",
-  "catalogNumber": "332.024 HOU",
-  "classification": "332.024",
-  "type": "Book - Circulation (Available for Borrowing)",
-  "rackNumber": "33",
-  "abstract": "In 'The Psychology of Money,' award-winning author Morgan Housel explores the complex relationship individuals have with money. Through 19 short stories, he delves into the psychological factors that influence financial decisions, offering timeless lessons on wealth, greed, and happiness.",
-  "mainSubject": "Finance",
-  "isbn": "978-0857197689",
-  "pages": "256 pages; illustrations; 21 cm",
-  "language": "English",
-  "author": "Morgan Housel",
-  "authorType": "Individual",
-  "publisher": "Harriman House",
-  "publishCity": "Petersfield, UK",
-  "publishYear": "2020",
-  "totalCopies": 5,
-  "availableCopies": 5,
-  "borrowPrice": "Rp. 0",
-  "lateFee": "Rp. 1,000 per day",
-  "canBorrow": true,
-  "rating": 4.9,
-  "reviewCount": 4,
-  "reviews": [
+  id: "1",
+  title: "The Psychology of Money: Timeless Lessons on Wealth, Greed, and Happiness",
+  author: "Morgan Housel",
+  image: "https://images-na.ssl-images-amazon.com/images/I/81cpDaCJJCL.jpg",
+  year: 2020,
+  quota: 5,
+  category:"finance",
+  catalogNumber: "332.024 HOU",
+  classification: "332.024",
+  type: "Book - Circulation (Available for Borrowing)",
+  rackNumber: "33",
+  abstract: "In 'The Psychology of Money,' award-winning author Morgan Housel explores the complex relationship individuals have with money. Through 19 short stories, he delves into the psychological factors that influence financial decisions, offering timeless lessons on wealth, greed, and happiness.",
+  mainSubject: "Finance",
+  isbn: "978-0857197689",
+  pages: "256 pages; illustrations; 21 cm",
+  language: "English",
+  authorType: "Individual",
+  publisher: "Harriman House",
+  publishCity: "Petersfield, UK",
+  availableCopies: 5,
+  borrowPrice: "Rp. 0",
+  lateFee: "Rp. 1,000 per day",
+  canBorrow: true,
+  rating: 4.9,
+  reviewCount: 4,
+  reviews: [
     {
-      "id": "1",
-      "author": "John Doe",
-      "date": "2023-11-15",
-      "rating": 5,
-      "content": "An insightful book that provides a great introduction to the psychological aspects of financial decision-making. Highly recommended for anyone interested in personal finance."
+      id: "1",
+      author: "John Doe",
+      date: "2023-11-15",
+      rating: 5,
+      content: "An insightful book that provides a great introduction to the psychological aspects of financial decision-making. Highly recommended for anyone interested in personal finance."
     },
     {
-      "id": "2",
-      "author": "Jane Smith",
-      "date": "2023-10-30",
-      "rating": 4,
-      "content": "Well-written and informative. I enjoyed learning about the various psychological factors that influence our relationship with money."
+      id: "2",
+      author: "Jane Smith",
+      date: "2023-10-30",
+      rating: 4,
+      content: "Well-written and informative. I enjoyed learning about the various psychological factors that influence our relationship with money."
     },
     {
-      "id": "3",
-      "author": "Alice Johnson",
-      "date": "2023-10-15",
-      "rating": 5,
-      "content": "This book offers a comprehensive overview of how psychology affects financial behavior. A must-read for anyone looking to improve their financial habits."
+      id: "3",
+      author: "Alice Johnson",
+      date: "2023-10-15",
+      rating: 5,
+      content: "This book offers a comprehensive overview of how psychology affects financial behavior. A must-read for anyone looking to improve their financial habits."
     },
     {
-      "id": "4",
-      "author": "Jane Smith",
-      "date": "2023-10-30",
-      "rating": 4,
-      "content": "Well-written and informative. I enjoyed learning about the various psychological factors that influence our relationship with money."
+      id: "4",
+      author: "Jane Smith",
+      date: "2023-10-30",
+      rating: 4,
+      content: "Well-written and informative. I enjoyed learning about the various psychological factors that influence our relationship with money."
     },
   ]
 };
@@ -122,7 +123,7 @@ export default function BookDetailPage() {
           <div className="md:w-1/3">
             <div className="relative">
               <Image
-                src={book.coverImage}
+                src={book.image}
                 alt={book.title}
                 width={300}
                 height={450}
@@ -187,7 +188,7 @@ export default function BookDetailPage() {
                 <MapPin className="mr-2" size={16} /> {book.publishCity}
               </p>
               <p className="flex items-center text-sm text-muted-foreground">
-                <Calendar className="mr-2" size={16} /> {book.publishYear}
+                <Calendar className="mr-2" size={16} /> {book.year}
               </p>
             </div>
             <Separator />
@@ -199,26 +200,26 @@ export default function BookDetailPage() {
               <div className="flex items-center text-sm text-muted-foreground mb-5 md:mb-0">
                 <BookOpen className="mr-2" size={16} />
                 <span>
-                  {book.availableCopies} of {book.totalCopies} available
+                  {book.availableCopies} of {book.quota} available
                 </span>
               </div>
               <div className="flex gap-2 md:gap-4 items-center justify-between">
                 <div className="flex gap-2">
-                <ShareDrawer
-                  title={book.title}
-                  url={typeof window !== 'undefined' ? window.location.href : ''}
-                />
-                <BookmarkButton bookId={book.id} bookTitle={book.title} mark="Bookmarked"/>
+                  <ShareDrawer
+                    title={book.title}
+                    url={typeof window !== 'undefined' ? window.location.href : ''}
+                  />
+                  <BookmarkButton book={book} mark="Bookmarked" />
                 </div>
                 {/* {book.canBorrow && (
                   <Button size="lg">Borrow Book</Button>
                 )} */}
                 {book.canBorrow && (
                   <Cart
-                  isAdd={true}
-                  book={book}
-                />
-                
+                    isAdd={true}
+                    book={book}
+                  />
+
                 )}
               </div>
             </div>

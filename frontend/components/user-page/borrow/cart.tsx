@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 interface CartItem {
   id: string;
   title: string;
-  coverImage: string;
+  image: string;
   author: string;
 }
 
@@ -63,7 +63,7 @@ export function Cart({ isAdd = false, book }: { isAdd?: boolean; book?: CartItem
         const newItem = {
           id: book.id,
           title: book.title,
-          coverImage: book.coverImage,
+          image: book.image,
           author: book.author,
         };
         const updatedItems = [...cartItems, newItem];
@@ -120,7 +120,7 @@ export function Cart({ isAdd = false, book }: { isAdd?: boolean; book?: CartItem
               <div key={item.id} className="flex gap-4 py-4">
                 <div className="relative w-16 h-24">
                   <Image
-                    src={item.coverImage}
+                    src={item.image}
                     alt={item.title}
                     fill
                     className="object-cover rounded"
