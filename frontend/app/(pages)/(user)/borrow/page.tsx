@@ -14,7 +14,7 @@ import { toast } from 'sonner'
 interface CartItem {
     id: string;
     title: string;
-    coverImage: string;
+    image: string;
     author: string;
 }
 
@@ -82,7 +82,7 @@ export default function CheckoutPage() {
                             {items.map((item) => (
                                 <li key={item.id} className="flex justify-between items-center">
                                     <div className="flex items-center space-x-4">
-                                        <Image src={item.coverImage} alt={item.title} width={80} height={100} className="object-cover" />
+                                        <Image src={item.image} alt={item.title} width={80} height={100} className="object-cover" />
                                         <div>
                                             <a href={`/collections/book/${item.id}`}>
                                                 <p className="font-semibold">{item.title}</p>
