@@ -3,7 +3,6 @@
 import * as React from "react"
 import {
   BookOpen,
-  Bot,
   Command,
   Frame,
   HelpCircle,
@@ -13,6 +12,11 @@ import {
   Send,
   Settings2,
   SquareTerminal,
+  UserPen,
+  BriefcaseBusiness,
+  MonitorSmartphone,
+  Cpu,
+  Piano
 } from "lucide-react"
 
 import { NavMain } from "@/components/user-page/nav-main"
@@ -30,6 +34,9 @@ import { Button } from "../ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { appInfo, assets } from "@/app/config"
+import Link from "next/link"
+import { NavNonBook } from "./nav-nonbook"
+import { useEffect, useState } from "react"
 
 const data = {
   user: {
@@ -37,89 +44,223 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
+  navBook: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Pengembangan Diri",
+      url: "/collections?category=Pengembangan Diri",
+      icon: UserPen, // ganti sesuai kebutuhan
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Analisis Tulisan Tangan",
+          url: "/collections?category=Pengembangan Diri&subcategory=Analisis Tulisan Tangan",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Emosi",
+          url: "/collections?category=Pengembangan Diri&subcategory=Emosi",
         },
         {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
+          title: "Journaling",
+          url: "/collections?category=Pengembangan Diri&subcategory=Journaling",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Komunikasi & Keterampilan Sosial",
+          url: "/collections?category=Pengembangan Diri&subcategory=Komunikasi & Keterampilan Sosial",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Motivasi & Inspiratif",
+          url: "/collections?category=Pengembangan Diri&subcategory=Motivasi & Inspiratif",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
+      title: "Bisnis",
+      url: "/collections?category=Bisnis",
+      icon: BriefcaseBusiness, // ganti sesuai kebutuhan
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Akuntansi",
+          url: "/collections?category=Bisnis&subcategory=Akuntansi",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Asuransi",
+          url: "/collections?category=Bisnis&subcategory=Asuransi",
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: "Bank & Perbankan",
+          url: "/collections?category=Bisnis&subcategory=Bank & Perbankan",
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: "E-Commerce",
+          url: "/collections?category=Bisnis&subcategory=E-Commerce",
+        },
+        {
+          title: "Ekonomi",
+          url: "/collections?category=Bisnis&subcategory=Ekonomi",
         },
       ],
     },
     {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
+      title: "Komputer",
+      url: "/collections?category=Komputer",
+      icon: MonitorSmartphone, // ganti sesuai kebutuhan
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "Aplikasi Bisnis & Produktivitas",
+          url: "/collections?category=Komputer&subcategory=Aplikasi Bisnis & Produktivitas",
         },
         {
-          title: "Team",
-          url: "#",
+          title: "Database Administrasi & Manajemen",
+          url: "/collections?category=Komputer&subcategory=Database Administrasi & Manajemen",
         },
         {
-          title: "Billing",
-          url: "#",
+          title: "Desain, Grafik & Media",
+          url: "/collections?category=Komputer&subcategory=Desain, Grafik & Media",
         },
         {
-          title: "Limits",
-          url: "#",
+          title: "Internet",
+          url: "/collections?category=Komputer&subcategory=Internet",
+        },
+        {
+          title: "Pemrograman",
+          url: "/collections?category=Komputer&subcategory=Pemrograman",
+        },
+      ],
+    },
+    {
+      title: "Teknologi",
+      url: "/collections?category=Teknologi",
+      icon: Cpu, // ganti sesuai kebutuhan
+      items: [
+        {
+          title: "Teknik Elektro",
+          url: "/collections?category=Teknologi&subcategory=Teknik Elektro",
+        },
+        {
+          title: "Teknologi Informasi",
+          url: "/collections?category=Teknologi&subcategory=Teknologi Informasi",
+        },
+        {
+          title: "Robotik",
+          url: "/collections?category=Teknologi&subcategory=Robotik",
+        },
+        {
+          title: "Kecerdasan Buatan",
+          url: "/collections?category=Teknologi&subcategory=Kecerdasan Buatan",
+        },
+        {
+          title: "Jaringan Komputer",
+          url: "/collections?category=Teknologi&subcategory=Jaringan Komputer",
+        },
+      ],
+    },
+    {
+      title: "Musik",
+      url: "/collections?category=Musik",
+      icon: Piano, // ganti sesuai kebutuhan
+      items: [
+        {
+          title: "Alat Musik",
+          url: "/collections?category=Musik&subcategory=Alat Musik",
+        },
+        {
+          title: "Dance",
+          url: "/collections?category=Musik&subcategory=Dance",
+        },
+        {
+          title: "Instruksi & Studi",
+          url: "/collections?category=Musik&subcategory=Instruksi & Studi",
+        },
+        {
+          title: "Musik Klasik",
+          url: "/collections?category=Musik&subcategory=Musik Klasik",
+        },
+        {
+          title: "Komposisi Musik",
+          url: "/collections?category=Musik&subcategory=Komposisi Musik",
+        },
+      ],
+    },
+  ],
+  navEBook: [
+    {
+      title: "Komputer",
+      url: "/collections?kind=ebook&category=Komputer",
+      icon: MonitorSmartphone, // ganti sesuai kebutuhan
+      items: [
+        {
+          title: "Aplikasi Bisnis & Produktivitas",
+          url: "/collections?kind=ebook&category=Komputer&subcategory=Aplikasi Bisnis & Produktivitas",
+        },
+        {
+          title: "Database Administrasi & Manajemen",
+          url: "/collections?kind=ebook&category=Komputer&subcategory=Database Administrasi & Manajemen",
+        },
+        {
+          title: "Desain, Grafik & Media",
+          url: "/collections?kind=ebook&category=Komputer&subcategory=Desain, Grafik & Media",
+        },
+        {
+          title: "Internet",
+          url: "/collections?kind=ebook&category=Komputer&subcategory=Internet",
+        },
+        {
+          title: "Pemrograman",
+          url: "/collections?kind=ebook&category=Komputer&subcategory=Pemrograman",
+        },
+      ],
+    },
+    {
+      title: "Teknologi",
+      url: "/collections?kind=ebook&category=Teknologi",
+      icon: Cpu, // ganti sesuai kebutuhan
+      items: [
+        {
+          title: "Teknik Elektro",
+          url: "/collections?kind=ebook&category=Teknologi&subcategory=Teknik Elektro",
+        },
+        {
+          title: "Teknologi Informasi",
+          url: "/collections?kind=ebook&category=Teknologi&subcategory=Teknologi Informasi",
+        },
+        {
+          title: "Robotik",
+          url: "/collections?kind=ebook&category=Teknologi&subcategory=Robotik",
+        },
+        {
+          title: "Kecerdasan Buatan",
+          url: "/collections?kind=ebook&category=Teknologi&subcategory=Kecerdasan Buatan",
+        },
+        {
+          title: "Jaringan Komputer",
+          url: "/collections?kind=ebook&category=Teknologi&subcategory=Jaringan Komputer",
+        },
+      ],
+    },
+    {
+      title: "Musik",
+      url: "/collections?kind=ebook&category=Musik",
+      icon: Piano, // ganti sesuai kebutuhan
+      items: [
+        {
+          title: "Alat Musik",
+          url: "/collections?kind=ebook&category=Musik&subcategory=Alat Musik",
+        },
+        {
+          title: "Dance",
+          url: "/collections?kind=ebook&category=Musik&subcategory=Dance",
+        },
+        {
+          title: "Instruksi & Studi",
+          url: "/collections?kind=ebook&category=Musik&subcategory=Instruksi & Studi",
+        },
+        {
+          title: "Musik Klasik",
+          url: "/collections?kind=ebook&category=Musik&subcategory=Musik Klasik",
+        },
+        {
+          title: "Komposisi Musik",
+          url: "/collections?kind=ebook&category=Musik&subcategory=Komposisi Musik",
         },
       ],
     },
@@ -141,6 +282,9 @@ const data = {
       icon: Map,
     },
   ],
+  navNonBook: [
+    2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017
+  ]
 }
 
 export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -168,19 +312,21 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="bg-white">
-        <Tabs defaultValue="book" className="w-full mt-3">
+        {/* <Tabs defaultValue="book" className="w-full mt-3">
           <TabsList className="mx-auto flex items-center w-fit rounded-full gap-2 p-2 h-10">
             <TabsTrigger value="book" className="rounded-full">Book</TabsTrigger>
             <TabsTrigger value="non-book" className="rounded-full">Non Book</TabsTrigger>
           </TabsList>
           <TabsContent value="book">
-            <NavMain items={data.navMain} />
-            <NavProjects projects={data.projects} />
+            <NavMain kind="Buku" items={data.navBook} />
+            <NavMain kind="E-Book" items={data.navEBook} />
+
           </TabsContent>
           <TabsContent value="non-book">
-            <NavMain items={data.navMain} />
+            <NavNonBook kind="Journal" items={data.navNonBook} />
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
+        <TabsComponent data={data}/>
       </SidebarContent>
 
       <SidebarFooter className="border-t p-4 bg-white">
@@ -194,11 +340,51 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
               <p className="text-sm text-gray-500">Contact our helpdesk</p>
             </div>
           </div>
-          <Button variant="outline" className="mt-4 w-full font-semibold">
-            CONTACT
-          </Button>
+          <Link href="/contact">
+            <Button variant="outline" className="mt-4 w-full font-semibold">
+              CONTACT
+            </Button>
+          </Link>
         </div>
       </SidebarFooter>
     </Sidebar>
   )
+}
+
+
+function TabsComponent({ data }: { data: any }) {
+  // State untuk tab aktif
+  const [activeTab, setActiveTab] = useState(() => {
+    // Ambil dari session storage atau default ke "book"
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("activeTab") || "book";
+    }
+    return "";
+  });
+
+  // Simpan tab aktif ke session storage saat berubah
+  useEffect(() => {
+    sessionStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
+
+  return (
+    <Tabs
+      defaultValue={activeTab} // Gunakan state untuk nilai default
+      onValueChange={(value) => setActiveTab(value)} // Update state saat tab berubah
+      className="w-full mt-3"
+    >
+      <TabsList className="mx-auto flex items-center w-fit rounded-full gap-2 p-2 h-10">
+        <TabsTrigger value="book" className="rounded-full">Book</TabsTrigger>
+        <TabsTrigger value="non-book" className="rounded-full">Non Book</TabsTrigger>
+      </TabsList>
+      <TabsContent value="book">
+        <NavMain kind="Buku" items={data.navBook} />
+        <NavMain kind="E-Book" items={data.navEBook} />
+      </TabsContent>
+      <TabsContent value="non-book">
+        <NavNonBook kind="Journal" items={data.navNonBook} />
+        <NavProjects projects={data.projects} />
+      </TabsContent>
+    </Tabs>
+  );
 }

@@ -22,9 +22,7 @@ const BookmarkButton = ({ book, customClass, mark }: { book: Book; customClass?:
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedBookmarks = JSON.parse(localStorage.getItem("bookmarkedBooks") || "[]");
-      console.log(storedBookmarks);
       const isBookAlreadyBookmarked = storedBookmarks.some((storedBook: Book) => storedBook.id === book.id);
-      console.log(isBookAlreadyBookmarked);
       setIsBookmarked(isBookAlreadyBookmarked);
     }
   }, [book]);  

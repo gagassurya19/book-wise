@@ -10,6 +10,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { Trash2, AlertCircle, CopyIcon } from 'lucide-react'
 import { toast } from 'sonner'
+import DateRangePicker from "@/components/ui/date-range-picker"
+import { DateRange } from 'react-day-picker'
 
 interface CartItem {
     id: string;
@@ -20,9 +22,18 @@ interface CartItem {
 
 export default function CheckoutPage() {
     const [items, setItems] = useState<CartItem[]>([]);
-    
-    const serviceFee = 1000
-    const totalFee = items.length * serviceFee
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(); // State untuk menyimpan tanggal peminjaman
+    const [paymentMethod, setPaymentMethod] = useState('bank');
+    const [paymentEvidence, setPaymentEvidence] = useState('');
+    const [isCopied, setIsCopied] = useState(false);
+
+    const serviceFee = 1000;
+    const totalFee = items.length * serviceFee;
+
+    const bankAccount = {
+        'norek': '901556823268',
+        'nama': 'Gagas Surya Laksana'
+    };
 
     const refreshData = () => {
         const storedItems = localStorage.getItem("cartItems");
@@ -30,9 +41,11 @@ export default function CheckoutPage() {
             setItems(JSON.parse(storedItems));
         }
     };
+
     useEffect(() => {
-        refreshData(); // Only called once when the component mounts
+        refreshData(); // Called once when the component mounts
     }, []);
+
     useEffect(() => {
         const handleStorageChange = (event: StorageEvent) => {
             if (event.key === "cartItems") {
@@ -45,28 +58,69 @@ export default function CheckoutPage() {
             window.removeEventListener("storage", handleStorageChange);
         };
     }, []);
-    const handleRemove = (id: string) => {
-        const storedItems = localStorage.getItem("cartItems");
-        const cartItems: CartItem[] = storedItems ? JSON.parse(storedItems) : [];
 
-        const updatedItems = cartItems.filter((item) => item.id !== id);
+    const handleRemove = (id: string) => {
+        const updatedItems = items.filter((item) => item.id !== id);
         localStorage.setItem("cartItems", JSON.stringify(updatedItems));
-        setItems(updatedItems); // Update state directly
+        setItems(updatedItems);
     };
 
-    const [paymentMethod, setPaymentMethod] = useState('bank')
-    const [isCopied, setIsCopied] = useState(false);
-    const bankAccount = {
-        'norek': '901556823268',
-        'nama': 'Gagas Surya Laksana'
-    }
     const copyAccountNumber = () => {
         navigator.clipboard.writeText(bankAccount.norek);
-        toast.success("Nomor rekening tersalin!")
+        toast.success("Nomor rekening tersalin!");
         setIsCopied(true);
         setTimeout(() => setIsCopied(false), 2000);
     };
 
+    const handleSubmit = async () => {
+        if (!dateRange || !dateRange.from || !dateRange.to) {
+            toast.error("Pilih tanggal peminjaman yang valid!");
+            return;
+        }
+
+        if(paymentEvidence == ''){
+            toast.error("Bukti pembayaran harus ada!");
+            return;
+        }
+
+        if(items.length == 0){
+            toast.error("Tambahkan buku!");
+            return;
+        }
+
+        const payload = {
+            items,
+            totalFee,
+            dateRange: {
+                from: dateRange.from.toISOString(),
+                to: dateRange.to.toISOString(),
+            },
+            paymentMethod,
+            paymentEvidence,
+        };
+
+        try {
+            // const response = await fetch("/api/checkout", {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify(payload),
+            // });
+
+            // if (response.ok) {
+            //     toast.success("Checkout successful!");
+            //     // Redirect or reset state
+            // } else {
+            //     toast.error("Checkout failed!");
+            // }
+            console.log(payload)
+            localStorage.removeItem("cartItems");
+            window.location.href = '/borrow/testdoanginibang';
+        } catch (error) {
+            toast.error("An error occurred during checkout!");
+        }
+    };
 
     return (
         <div className="container mx-auto p-4 max-w-4xl">
@@ -189,18 +243,31 @@ export default function CheckoutPage() {
                                 )}
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="evidence">Url Payment Evidence</Label>
-                                    <Input id="evidence" placeholder="Enter url evidence" required />
+                                    <Label htmlFor="evidence">Link bukti pembayaran</Label>
+                                    <Input id="evidence" placeholder="Enter url evidence" required onChange={(e) => setPaymentEvidence(e.target.value)}/>
+                                </div>
+
+                                <div className="grid gap-2 mt-2">
+                                    <Label htmlFor="Date">Tanggal peminjaman (maks. 5 hari)</Label>
+                                    <DateRangePicker
+                                        onSelect={(range) => {
+                                            // Periksa apakah range adalah objek DateRange
+                                            if (range && typeof range === "object" && "from" in range && "to" in range) {
+                                                setDateRange(range as DateRange);
+                                            }
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </form>
                     </CardContent>
                     <CardFooter>
-                        <Button className="w-full" onClick={(e) => { e.preventDefault(); window.location.href = '/borrow/testdoanginibang';}}>Checkout</Button>
+                        <Button className="w-full" onClick={handleSubmit}>
+                            Checkout
+                        </Button>
                     </CardFooter>
                 </Card>
             </div>
-        </div >
-    )
+        </div>
+    );
 }
-

@@ -20,8 +20,9 @@ import {
 } from "@/components/ui/sidebar"
 
 export function NavMain({
-  items,
+  kind, items,
 }: {
+  kind?: string
   items: {
     title: string
     url: string
@@ -35,7 +36,7 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>{kind}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
