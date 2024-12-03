@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { AlertCircle, Download, Loader2 } from 'lucide-react'
+import { useAuthGuard } from '@/common/tokenizer'
 
 interface InvoiceItem {
     id: number
@@ -27,7 +28,7 @@ const invoiceData: Invoice = {
     id: 'INV-2023-001',
     date: '2023-05-01',
     dueDate: '2023-05-15',
-    status: 'pending',
+    status: 'paid',
     items: [
         { id: 1, title: 'Introduction to React', author: 'Jane Doe', fee: 5.99 },
         { id: 2, title: 'Advanced TypeScript', author: 'John Smith', fee: 5.99 },
@@ -44,6 +45,15 @@ export default function InvoicePage() {
     useEffect(() => {
         setIsDialogOpen(true)
     }, []);
+
+    const { isLoading } = useAuthGuard();
+    if (isLoading) {
+        return (
+        <div className="flex items-center justify-center h-screen">
+            <p>Loading...</p>
+        </div>
+        );
+    }
 
     return (
         <div className="container mx-auto p-4">

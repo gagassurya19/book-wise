@@ -352,25 +352,13 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
 }
 
 
+
 function TabsComponent({ data }: { data: any }) {
-  // State untuk tab aktif
-  const [activeTab, setActiveTab] = useState(() => {
-    // Ambil dari session storage atau default ke "book"
-    if (typeof window !== "undefined") {
-      return sessionStorage.getItem("activeTab") || "book";
-    }
-    return "";
-  });
-
-  // Simpan tab aktif ke session storage saat berubah
-  useEffect(() => {
-    sessionStorage.setItem("activeTab", activeTab);
-  }, [activeTab]);
-
+  const [activeTab, setActiveTab] = useState<string>("book");
   return (
     <Tabs
-      defaultValue={activeTab} // Gunakan state untuk nilai default
-      onValueChange={(value) => setActiveTab(value)} // Update state saat tab berubah
+      defaultValue={activeTab}
+      onValueChange={(value) => setActiveTab(value)}
       className="w-full mt-3"
     >
       <TabsList className="mx-auto flex items-center w-fit rounded-full gap-2 p-2 h-10">

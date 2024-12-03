@@ -4,6 +4,7 @@ import { Badge } from "../ui/badge";
 import Image from "next/image"
 import BookmarkButton from "@/common/bookmark-button";
 import { ShareDrawer } from "./share-drawer";
+import { verifyToken } from "@/common/tokenizer";
 
 export default function BookCollection({ search = "", category = "", years = "" }) {
     const books = [
@@ -183,7 +184,7 @@ export default function BookCollection({ search = "", category = "", years = "" 
                             {/* Book Image */}
                             <div className="relative group">
                                 <div className="absolute top-2 right-2 flex flex-col gap-2 z-10">
-                                    <BookmarkButton book={book} />
+                                    {verifyToken() && <BookmarkButton book={book} />}
                                     <ShareDrawer
                                         title={book.title}
                                         url={typeof window !== 'undefined' ? window.location.href+"/book/"+book.id : ''}

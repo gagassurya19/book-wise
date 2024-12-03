@@ -1,7 +1,9 @@
 'use client'
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { toast } from "sonner";
+import {verifyToken, deleteToken} from "@/common/tokenizer";
 
 import { Book, Menu, Sunset, Trees, Zap, Bell, User, Bookmark, LogOut, Search, History } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -39,10 +41,10 @@ import {
 import { cn } from '@/lib/utils';
 import { assets } from '@/app/config';
 import { Input } from './ui/input';
-import { useRouter } from 'next/navigation';
 import { Cart } from "./user-page/borrow/cart";
 
 const webName = "BookWise"
+
 
 const subMenuItemsOne = [
   {
@@ -91,170 +93,21 @@ const subMenuItemsTwo = [
   },
 ];
 
-const notifications = [
-  { id: 1, message: "Your order has been shipped!" },
-  { id: 2, message: "New product available" },
-  { id: 3, message: "Sale starts tomorrow!" },
-]
-
-function SearchBar() {
-  const router = useRouter();
-  const [search, setSearch] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
-  const [suggestions, setSuggestions] = useState([
-    "Harry Potter",
-    "The Great Gatsby",
-    "1984",
-    "Moby Dick",
-    "Pride and Prejudice",
-  ]);
-  const [categories] = useState(["Fiction", "Non-fiction", "Sci-fi", "Fantasy", "Biography"]);
-  const [years] = useState(["2024", "2023", "2022", "2021", "2020", "Before 2020"]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
-
-  // Explicitly type the ref as an HTMLDivElement or null
-  const dropdownRef = useRef<any>(null);
-
-  const filteredSuggestions = suggestions.filter((item) => {
-    const categoryMatch = selectedCategory ? item.toLowerCase().includes(selectedCategory.toLowerCase()) : true;
-    const yearMatch = selectedYear ? item.includes(selectedYear) : true;
-    return categoryMatch && yearMatch;
-  });
-
-  const handleClickOutside = (e: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef?.current?.contains(e.target as Node)) {
-      setIsFocused(false);
-    }
-  };
-
-  React.useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Make your API call here with the selectedCategory, selectedYear, and any input query
-    // console.log("Searching with filters:", {
-    //   category: selectedCategory,
-    //   year: selectedYear,
-    //   query: filteredSuggestions,
-    // });
-    router.push(`/collections?search=${search}&category=${selectedCategory}&year=${selectedYear}`);
-  };
-
-  return (
-    <div className="flex items-center flex-col w-full max-w-lg mx-auto">
-      <div className="relative w-full">
-        <Search
-          className="absolute right-5 top-1/2 transform -translate-y-1/2 text-gray-400"
-          size={20}
-        />
-        <input
-          type="text"
-          placeholder="Search your book here..."
-          className="rounded-full h-10 px-5 w-full transition-all duration-300 focus:h-12 ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300"
-          onFocus={() => setIsFocused(true)}
-          onChange={(e) => {
-            const query = e.target.value.toLowerCase();
-            setSearch(query);
-            setSuggestions([
-              "Harry Potter",
-              "The Great Gatsby",
-              "1984",
-              "Moby Dick",
-              "Pride and Prejudice",
-            ].filter((item) => item.toLowerCase().includes(query)));
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              setIsFocused(false);
-              router.push(`/collections?search=${search}`);
-            }
-          }}
-          value={search}
-        />
-
-        {isFocused && (
-          <form
-            ref={dropdownRef}
-            onSubmit={handleSubmit}
-            className="absolute top-full mt-2 w-full bg-white shadow-lg rounded-lg z-50 grid grid-cols-1 md:grid-cols-2 divide-x divide-gray-200"
-          >
-            {/* Left Column: Suggestions */}
-            <div className="p-4">
-              <h3 className="font-semibold text-gray-700 mb-2">Suggestions</h3>
-              {filteredSuggestions.length > 0 ? (
-                filteredSuggestions.map((suggestion, index) => (
-                  <div
-                    key={index}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    onMouseDown={() => {
-                      setIsFocused(false);
-                      setSuggestions([]);
-                      setSearch(suggestion);
-                      router.push(`/collections?search=${encodeURIComponent(suggestion)}`);
-                    }}
-                  >
-                    {suggestion}
-                  </div>
-                ))
-              ) : (
-                <div className="text-gray-500">No suggestions found</div>
-              )}
-            </div>
-
-            {/* Right Column: Advanced Search */}
-            <div className="p-4">
-              <h3 className="font-semibold text-gray-700 mb-2">Advanced Search</h3>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-4 py-2 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-gray-300"
-              >
-                <option value="">All Categories</option>
-                {categories.map((category, index) => (
-                  <option key={index} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-gray-300"
-              >
-                <option value="">All Years</option>
-                {years.map((year, index) => (
-                  <option key={index} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-
-              {/* Search Button */}
-              {(selectedCategory || selectedYear) && (
-                <Button
-                  type="submit"
-                  className="w-full mt-4"
-                >
-                  Search
-                </Button>
-              )}
-            </div>
-          </form>
-        )}
-      </div>
-    </div>
-  );
-}
-
-export default function Navbar({ isLoggedIn = true, loggedAs = "Mahasiswa", userName = "Mahasiswa" }: { isLoggedIn?: boolean, loggedAs?: string, userName?: string }) {
+export default function NavbarAdmin({ loggedAs = "Admin", userName = "Admin" }: { loggedAs?: string, userName?: string }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const onLogout = () => {
+    deleteToken()
+    toast.success("Logged out successfully");
+    router.push("/")
+  }
+
+  useEffect(() => {
+    setIsLoggedIn(verifyToken())
+  })
+
   return (
     <section className="flex border-b bg-background p-4 sticky top-0 z-50">
       <div className="container mx-auto">
@@ -268,22 +121,14 @@ export default function Navbar({ isLoggedIn = true, loggedAs = "Mahasiswa", user
                 alt="logo"
               />
               <span className="text-xl font-bold uppercase">{webName}</span>
-              {isLoggedIn ? <span className="text-sm font-regular uppercase">| {loggedAs}</span> : null}
+              <span className="text-sm font-regular uppercase">| ADMIN PAGE</span>
             </Link>
 
-            {pathname !== '/collections' && (
-              <Button
-                className='text-muted-foreground hidden md:flex'
-                variant='ghost'
-                onClick={(e) => { e.preventDefault(); window.location.href = '/collections'; }}
-              >
-                Collections
-              </Button>
-            )}
+            {/* button space here */}
+          
           </div>
           <div className="flex items-center w-full max-w-lg gap-4">
-            <SearchBar />
-            <Cart />
+            {/* space kosong tengah */}
           </div>
           <div className="flex gap-2">
             {isLoggedIn ? (
@@ -302,36 +147,6 @@ export default function Navbar({ isLoggedIn = true, loggedAs = "Mahasiswa", user
                     Peminjaman
                   </a> */}
 
-                  <NavigationMenuList className="mr-5 gap-4 flex items-center">
-                    <NavigationMenuItem>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline" size="icon">
-                            <Bell className="h-4 w-4" />
-                            {notifications.length > 0 && (
-                              <span className="absolute -top-2 right-3 w-5 h-5 rounded-full bg-[#E02954] text-primary-foreground text-xs flex items-center justify-center">
-                                {notifications.length}
-                              </span>
-                            )}
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          {notifications.map((notification) => (
-                            <DropdownMenuItem key={notification.id}>{notification.message}</DropdownMenuItem>
-                          ))}
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem asChild>
-                            <Link href="/settings/notifications">
-                              <span className="w-full text-center cursor-pointer">See All</span>
-                            </Link>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </NavigationMenuItem>
-                  </NavigationMenuList>
-
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Avatar className="cursor-pointer">
@@ -343,12 +158,12 @@ export default function Navbar({ isLoggedIn = true, loggedAs = "Mahasiswa", user
                       <DropdownMenuLabel>My Account</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href="/settings/account" className="flex items-center cursor-pointer">
+                        <Link href="/admin/settings" className="flex items-center cursor-pointer">
                           <User className="mr-2 h-4 w-4" />
                           Profile
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
+                      {/* <DropdownMenuItem asChild>
                         <Link href="/settings/transaction-history" className="flex items-center cursor-pointer">
                           <History className="mr-2 h-4 w-4" />
                           Transaction History
@@ -365,10 +180,10 @@ export default function Navbar({ isLoggedIn = true, loggedAs = "Mahasiswa", user
                           <Bell className="mr-2 h-4 w-4" />
                           Notifications
                         </Link>
-                      </DropdownMenuItem>
+                      </DropdownMenuItem> */}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <button className="flex items-center cursor-pointer w-full" onClick={() => {/* Add your logout logic here */ }}>
+                        <button className="flex items-center cursor-pointer w-full" onClick={() => onLogout()}>
                           <LogOut className="mr-2 h-4 w-4" />
                           Logout
                         </button>
@@ -379,11 +194,8 @@ export default function Navbar({ isLoggedIn = true, loggedAs = "Mahasiswa", user
               </>
             ) : (
               <div className="mt-2 flex flex-row gap-3">
-                <Button variant={'outline'}>
-                  <Link href="/auth/signin">Log in</Link>
-                </Button>
                 <Button>
-                  <Link href="/auth/signup">Sign Up</Link>
+                  <Link href="/">Back to home</Link>
                 </Button>
               </div>
             )}
@@ -401,7 +213,7 @@ export default function Navbar({ isLoggedIn = true, loggedAs = "Mahasiswa", user
                 />
               </Link>
             </div>
-            <SearchBar />
+            {/* space kosong tengah */}
             {isLoggedIn ? (
               // LOGGED IN
               <Sheet>
@@ -458,8 +270,8 @@ export default function Navbar({ isLoggedIn = true, loggedAs = "Mahasiswa", user
                   </div>
                   <div className="border-t pt-4">
                     <div className="mt-2 flex flex-col gap-3">
-                      <Button>
-                        <Link href="#">Logout</Link>
+                      <Button onClick={() => onLogout()}>
+                        Logout
                       </Button>
                     </div>
                   </div>

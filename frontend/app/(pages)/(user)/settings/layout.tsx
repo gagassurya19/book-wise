@@ -1,12 +1,10 @@
+"use client"
+
 import { Metadata } from "next"
 import Image from "next/image"
 import { Separator } from "@/components/ui/separator"
 import { SidebarNav } from "@/components/user-page/sidebar-nav"
-
-export const metadata: Metadata = {
-  title: "Settings",
-  description: "Manage your account settings and preferences.",
-}
+import { useAuthGuard } from "@/common/tokenizer"
 
 const sidebarNavItems = [
   {
@@ -32,6 +30,14 @@ interface SettingsLayoutProps {
 }
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
+  const { isLoading } = useAuthGuard();
+    if (isLoading) {
+        return (
+        <div className="flex items-center justify-center h-screen">
+            <p>Loading...</p>
+        </div>
+        );
+    }
   return (
     <div className="container mx-auto space-y-6 p-10 pb-16">
       <div className="space-y-0.5">

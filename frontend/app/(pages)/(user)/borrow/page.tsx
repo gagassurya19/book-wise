@@ -12,6 +12,7 @@ import { Trash2, AlertCircle, CopyIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import DateRangePicker from "@/components/ui/date-range-picker"
 import { DateRange } from 'react-day-picker'
+import { useAuthGuard } from '@/common/tokenizer'
 
 interface CartItem {
     id: string;
@@ -121,6 +122,15 @@ export default function CheckoutPage() {
             toast.error("An error occurred during checkout!");
         }
     };
+
+    const { isLoading } = useAuthGuard();
+    if (isLoading) {
+        return (
+        <div className="flex items-center justify-center h-screen">
+            <p>Loading...</p>
+        </div>
+        );
+    }
 
     return (
         <div className="container mx-auto p-4 max-w-4xl">
