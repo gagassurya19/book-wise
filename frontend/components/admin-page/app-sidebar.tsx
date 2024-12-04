@@ -1,262 +1,299 @@
 "use client"
 
 import * as React from "react"
-import { ArchiveX, Command, File, Inbox, Send, Trash2 } from "lucide-react"
-
+import { CalendarSearch, LibraryBig, LayoutDashboard, UserRound, Cog } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 import { NavUser } from "@/components/admin-page/nav-user"
 import { Label } from "@/components/ui/label"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarInput,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarHeader,
+    SidebarInput,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Switch } from "@/components/ui/switch"
+import Link from "next/link"
+import { assets } from "@/app/config"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
-// This is sample data
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-      isActive: true,
+    user: {
+        name: "admin",
+        email: "admin@admin.com",
+        avatar: `https://api.dicebear.com/6.x/initials/svg?seed=admin`,
     },
-    {
-      title: "Drafts",
-      url: "#",
-      icon: File,
-      isActive: false,
-    },
-    {
-      title: "Sent",
-      url: "#",
-      icon: Send,
-      isActive: false,
-    },
-    {
-      title: "Junk",
-      url: "#",
-      icon: ArchiveX,
-      isActive: false,
-    },
-    {
-      title: "Trash",
-      url: "#",
-      icon: Trash2,
-      isActive: false,
-    },
-  ],
-  mails: [
-    {
-      name: "William Smith",
-      email: "williamsmith@example.com",
-      subject: "Meeting Tomorrow",
-      date: "09:34 AM",
-      teaser:
-        "Hi team, just a reminder about our meeting tomorrow at 10 AM.\nPlease come prepared with your project updates.",
-    },
-    {
-      name: "Alice Smith",
-      email: "alicesmith@example.com",
-      subject: "Re: Project Update",
-      date: "Yesterday",
-      teaser:
-        "Thanks for the update. The progress looks great so far.\nLet's schedule a call to discuss the next steps.",
-    },
-    {
-      name: "Bob Johnson",
-      email: "bobjohnson@example.com",
-      subject: "Weekend Plans",
-      date: "2 days ago",
-      teaser:
-        "Hey everyone! I'm thinking of organizing a team outing this weekend.\nWould you be interested in a hiking trip or a beach day?",
-    },
-    {
-      name: "Emily Davis",
-      email: "emilydavis@example.com",
-      subject: "Re: Question about Budget",
-      date: "2 days ago",
-      teaser:
-        "I've reviewed the budget numbers you sent over.\nCan we set up a quick call to discuss some potential adjustments?",
-    },
-    {
-      name: "Michael Wilson",
-      email: "michaelwilson@example.com",
-      subject: "Important Announcement",
-      date: "1 week ago",
-      teaser:
-        "Please join us for an all-hands meeting this Friday at 3 PM.\nWe have some exciting news to share about the company's future.",
-    },
-    {
-      name: "Sarah Brown",
-      email: "sarahbrown@example.com",
-      subject: "Re: Feedback on Proposal",
-      date: "1 week ago",
-      teaser:
-        "Thank you for sending over the proposal. I've reviewed it and have some thoughts.\nCould we schedule a meeting to discuss my feedback in detail?",
-    },
-    {
-      name: "David Lee",
-      email: "davidlee@example.com",
-      subject: "New Project Idea",
-      date: "1 week ago",
-      teaser:
-        "I've been brainstorming and came up with an interesting project concept.\nDo you have time this week to discuss its potential impact and feasibility?",
-    },
-    {
-      name: "Olivia Wilson",
-      email: "oliviawilson@example.com",
-      subject: "Vacation Plans",
-      date: "1 week ago",
-      teaser:
-        "Just a heads up that I'll be taking a two-week vacation next month.\nI'll make sure all my projects are up to date before I leave.",
-    },
-    {
-      name: "James Martin",
-      email: "jamesmartin@example.com",
-      subject: "Re: Conference Registration",
-      date: "1 week ago",
-      teaser:
-        "I've completed the registration for the upcoming tech conference.\nLet me know if you need any additional information from my end.",
-    },
-    {
-      name: "Sophia White",
-      email: "sophiawhite@example.com",
-      subject: "Team Dinner",
-      date: "1 week ago",
-      teaser:
-        "To celebrate our recent project success, I'd like to organize a team dinner.\nAre you available next Friday evening? Please let me know your preferences.",
-    },
-  ],
+    navMain: [
+        {
+            title: "Dashboard",
+            url: "/admin",
+            icon: LayoutDashboard,
+            isActive: true,
+        },
+        {
+            title: "Book",
+            url: "/admin/book",
+            icon: LibraryBig,
+            isActive: false,
+        },
+        {
+            title: "User",
+            url: "/admin/user",
+            icon: UserRound,
+            isActive: false,
+        },
+        {
+            title: "Transaction",
+            url: "/admin/transaction",
+            icon: CalendarSearch,
+            isActive: false,
+        },
+        {
+            title: "Settings",
+            url: "/admin/settings",
+            icon: Cog,
+            isActive: false,
+        },
+    ],
 }
 
+const dataNeedApproval = [
+    {
+        name: "Emily Davis",
+        phone_number: "0812346789",
+        invoice_code: "INV-2023-001",
+        date: "2023-05-01",
+        dueDate: "2023-05-15",
+        status: "pending",
+        items: [
+            { id: 1, title: "Introduction to React", author: "Jane Doe", fee: 5.99 },
+            { id: 2, title: "Advanced TypeScript", author: "John Smith", fee: 5.99 },
+            { id: 3, title: "Node.js Fundamentals", author: "Alice Johnson", fee: 5.99 },
+        ],
+    },
+    {
+        name: "William Smith",
+        phone_number: "0815671234",
+        invoice_code: "INV-2023-002",
+        date: "2023-06-01",
+        dueDate: "2023-06-15",
+        status: "pending",
+        items: [
+            { id: 1, title: "JavaScript Essentials", author: "Robert Brown", fee: 8.99 },
+            { id: 2, title: "Modern CSS", author: "Emily White", fee: 7.49 },
+        ],
+    },
+    {
+        name: "Alice Johnson",
+        phone_number: "0812987654",
+        invoice_code: "INV-2023-003",
+        date: "2023-07-01",
+        dueDate: "2023-07-15",
+        status: "pending",
+        items: [
+            { id: 1, title: "Python for Beginners", author: "Charles Gray", fee: 6.99 },
+            { id: 2, title: "Data Science with Python", author: "Laura Green", fee: 9.99 },
+            { id: 3, title: "Machine Learning Basics", author: "Kevin Lee", fee: 10.99 },
+        ],
+    },
+    {
+        name: "Bob Johnson",
+        phone_number: "0813579246",
+        invoice_code: "INV-2023-004",
+        date: "2023-08-01",
+        dueDate: "2023-08-15",
+        status: "pending",
+        items: [
+            { id: 1, title: "Introduction to Databases", author: "Susan Blue", fee: 7.99 },
+            { id: 2, title: "SQL Queries for Beginners", author: "Peter Parker", fee: 6.49 },
+        ],
+    },
+]
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  // Note: I'm using state to show active item.
-  // IRL you should use the url/router.
-  const [activeItem, setActiveItem] = React.useState(data.navMain[0])
-  const [mails, setMails] = React.useState(data.mails)
-  const { setOpen } = useSidebar()
+    const [activeItem, setActiveItem] = React.useState(data.navMain[0])
+    const [searchQuery, setSearchQuery] = React.useState("")
+    const [filteredData, setFilteredData] = React.useState(dataNeedApproval)
 
-  return (
-    <Sidebar
-      collapsible="icon"
-      className="overflow-hidden [&>[data-sidebar=sidebar]]:flex-row"
-      {...props}
-    >
-      {/* This is the first sidebar */}
-      {/* We disable collapsible and adjust width to icon. */}
-      {/* This will make the sidebar appear as icons. */}
-      <Sidebar
-        collapsible="none"
-        className="!w-[calc(var(--sidebar-width-icon)_+_1px)] border-r"
-      >
-        <SidebarHeader>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
-                <a href="#">
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <Command className="size-4" />
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Acme Inc</span>
-                    <span className="truncate text-xs">Enterprise</span>
-                  </div>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent className="px-1.5 md:px-0">
-              <SidebarMenu>
-                {data.navMain.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      tooltip={{
-                        children: item.title,
-                        hidden: false,
-                      }}
-                      onClick={() => {
-                        setActiveItem(item)
-                        const mail = data.mails.sort(() => Math.random() - 0.5)
-                        setMails(
-                          mail.slice(
-                            0,
-                            Math.max(5, Math.floor(Math.random() * 10) + 1)
-                          )
-                        )
-                        setOpen(true)
-                      }}
-                      isActive={activeItem.title === item.title}
-                      className="px-2.5 md:px-2"
-                    >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarFooter>
-          <NavUser user={data.user} />
-        </SidebarFooter>
-      </Sidebar>
+    React.useEffect(() => {
+        const filtered = dataNeedApproval.filter((item) =>
+            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.phone_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.invoice_code.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        setFilteredData(filtered)
+    }, [searchQuery])
 
-      {/* This is the second sidebar */}
-      {/* We disable collapsible and let it fill remaining space */}
-      <Sidebar collapsible="none" className="hidden flex-1 md:flex">
-        <SidebarHeader className="gap-3.5 border-b p-4">
-          <div className="flex w-full items-center justify-between">
-            <div className="text-base font-medium text-foreground">
-              {activeItem.title}
-            </div>
-            <Label className="flex items-center gap-2 text-sm">
-              <span>Unreads</span>
-              <Switch className="shadow-none" />
-            </Label>
-          </div>
-          <SidebarInput placeholder="Type to search..." />
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup className="px-0">
-            <SidebarGroupContent>
-              {mails.map((mail) => (
-                <a
-                  href="#"
-                  key={mail.email}
-                  className="flex flex-col items-start gap-2 whitespace-nowrap border-b p-4 text-sm leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                >
-                  <div className="flex w-full items-center gap-2">
-                    <span>{mail.name}</span>{" "}
-                    <span className="ml-auto text-xs">{mail.date}</span>
-                  </div>
-                  <span className="font-medium">{mail.subject}</span>
-                  <span className="line-clamp-2 w-[260px] whitespace-break-spaces text-xs">
-                    {mail.teaser}
-                  </span>
-                </a>
-              ))}
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-    </Sidebar>
-  )
+    return (
+        <Sidebar
+            collapsible="icon"
+            className="overflow-hidden [&>[data-sidebar=sidebar]]:flex-row"
+            {...props}
+        >
+            <Sidebar
+                collapsible="none"
+                className="!w-[calc(var(--sidebar-width-icon)_+_1px)] border-r"
+            >
+                <SidebarHeader>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
+                                <a href="/admin">
+                                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
+                                        <img src={assets.logoUrl} className="w-8" alt="logo" />
+                                    </div>
+                                    <div className="grid flex-1 text-left text-sm leading-tight">
+                                        <span className="truncate font-semibold">Book Wise</span>
+                                        <span className="truncate text-xs">Admin Dashboard</span>
+                                    </div>
+                                </a>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarHeader>
+                <SidebarContent>
+                    <SidebarGroup>
+                        <SidebarGroupContent className="px-1.5 md:px-0">
+                            <SidebarMenu>
+                                {data.navMain.map((item) => (
+                                    <SidebarMenuItem key={item.title}>
+                                        <Link href={item.url} className="flex items-center space-x-2">
+                                            <SidebarMenuButton
+                                                tooltip={{
+                                                    children: item.title,
+                                                    hidden: false,
+                                                }}
+                                                onClick={() => setActiveItem(item)}
+                                                isActive={activeItem.title === item.title}
+                                                className="px-2.5 md:px-2"
+                                            >
+                                                <item.icon />
+                                                <span>{item.title}</span>
+                                            </SidebarMenuButton>
+                                        </Link>
+                                    </SidebarMenuItem>
+                                ))}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                </SidebarContent>
+                <SidebarFooter>
+                    <NavUser user={data.user} />
+                </SidebarFooter>
+            </Sidebar>
+
+            <Sidebar collapsible="none" className="hidden flex-1 md:flex">
+                <SidebarHeader className="gap-3.5 border-b p-4">
+                    <div className="flex w-full items-center justify-between">
+                        <div className="text-base font-medium text-foreground">
+                            Pending Approval
+                        </div>
+                        <Label className="flex items-center gap-2 text-sm">
+                            {filteredData.length != 0 && (
+                                <span className="w-6 h-6 rounded-full bg-[#E02954] text-primary-foreground text-xs flex items-center justify-center">
+                                    {filteredData.length > 9 ? "10+" : filteredData.length}
+                                </span>
+                            )}
+                        </Label>
+                    </div>
+                    <SidebarInput
+                        placeholder="Type to search..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </SidebarHeader>
+                <SidebarContent>
+                    <SidebarGroup className="px-0">
+                        <SidebarGroupContent>
+                            {filteredData.map((item) => (
+                                <Dialog key={item.invoice_code}>
+                                    <DialogTrigger asChild>
+                                        <button className="flex w-full flex-col items-start gap-2 whitespace-nowrap border-b p-4 text-sm leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                                            <div className="flex w-full items-center gap-2">
+                                                <span className="font-medium">{item.invoice_code}</span>
+                                                <span className="ml-auto text-xs">{item.date}</span>
+                                            </div>
+                                            <div className="text-xs">Nama: {item.name}</div>
+                                            <span className="text-xs">Phone: {item.phone_number}</span>
+                                        </button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Transaction Details</DialogTitle>
+                                        </DialogHeader>
+                                        <Card className="w-full max-w-4xl mx-auto">
+                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                <CardTitle className="text-2xl font-bold">Invoice</CardTitle>
+                                                <Badge
+                                                    variant={item.status === 'paid' ? 'default' : item.status === 'overdue' ? 'destructive' : 'secondary'}
+                                                >
+                                                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                                                </Badge>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="grid grid-cols-2 gap-4 mb-6">
+                                                    <div>
+                                                        <p className="text-sm font-medium">Invoice Number</p>
+                                                        <p className="text-lg">{item.invoice_code}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-medium">Date Issued</p>
+                                                        <p className="text-lg">{item.date}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-medium">Due Date</p>
+                                                        <p className="text-lg">{item.dueDate}</p>
+                                                    </div>
+                                                </div>
+                                                <Table>
+                                                    <TableHeader>
+                                                        <TableRow>
+                                                            <TableHead>Item</TableHead>
+                                                            <TableHead>Author</TableHead>
+                                                            <TableHead className="text-right">Amount</TableHead>
+                                                        </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {item.items.map((item) => (
+                                                            <TableRow key={item.id}>
+                                                                <TableCell className="font-medium">{item.title}</TableCell>
+                                                                <TableCell>{item.author}</TableCell>
+                                                                <TableCell className="text-right">${item.fee.toFixed(2)}</TableCell>
+                                                            </TableRow>
+                                                        ))}
+                                                        <TableRow>
+                                                            <TableCell colSpan={2} className="font-bold">Total</TableCell>
+                                                            <TableCell className="text-right font-bold">${item.items.reduce((sum, item) => sum + item.fee, 0)}</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </CardContent>
+                                            <CardFooter className="flex justify-between">
+                                                {/* <Button variant="outline" onClick={handleDownload}>
+                                                    <Download className="mr-2 h-4 w-4" />
+                                                    Download Invoice
+                                                </Button> */}
+                                                {/* <Button>Contact Admin</Button> */}
+                                            </CardFooter>
+                                        </Card>
+                                        <DialogFooter>
+                                            <Button variant="secondary">Decline</Button>
+                                            <Button>Approve</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            ))}
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                </SidebarContent>
+            </Sidebar>
+        </Sidebar>
+    )
 }

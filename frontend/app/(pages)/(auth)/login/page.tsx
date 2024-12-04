@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { verifyToken } from "@/common/tokenizer"
+import { appInfo, assets } from "@/app/config"
 
 const loginFormSchema = z.object({
   email: z.string().email({
@@ -73,9 +74,19 @@ export default function LoginPage() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md">
+          <div className="mx-auto max-w-sm flex flex-col items-center justify-center mb-10">
+            <Link href="/" className="flex flex-col items-center gap-2">
+              <img
+                src={assets.logoUrl}
+                className="w-8"
+                alt="logo"
+              />
+              <span className="text-xl font-bold uppercase">{appInfo.appName}</span>
+            </Link>
+          </div>
           <Card className="mx-auto max-w-sm">
             <CardHeader>
               <CardTitle className="text-2xl">Login</CardTitle>
