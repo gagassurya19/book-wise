@@ -40,7 +40,7 @@ const Hero = () => {
             Selamat Datang
           </h1>
           <p className="text-balance text-muted-foreground lg:text-lg">
-          Finely crafted with love and hate. Give us ayam geprek <span className='underline'>paha atas</span>, and we’ll change the world!
+          Bookwise: Jelajahi Dunia dengan Setiap Halaman
           </p>
         </div>
         <Button size="lg" className="mt-10">
