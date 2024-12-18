@@ -37,15 +37,15 @@ const Hero = () => {
       <div className="container text-center">
         <div className="mx-auto flex max-w-screen-lg flex-col gap-6">
           <h1 className="text-3xl font-extrabold lg:text-6xl">
-            Selamat Datang
+            Selamat Datang di Bookwise!
           </h1>
           <p className="text-balance text-muted-foreground lg:text-lg">
-            Bookwise: Jelajahi Dunia dengan Setiap Halaman
+            Book wise: Jelajahi dunia, temukan cerita, dan mulai petualangan seru dalam setiap halaman. 📚✨
           </p>
         </div>
         <Button size="lg" className="mt-10">
           <Link href="/register">
-            Masuk Untuk Lihat Semua Koleksi Buku
+            Baca, belajar, dan bertumbuh bersama kami.
           </Link>
         </Button>
         <div className="mx-auto mt-10 flex w-fit flex-col items-center gap-4 sm:flex-row">
