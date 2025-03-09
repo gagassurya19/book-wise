@@ -37,7 +37,7 @@ const Hero = () => {
       <div className="container text-center">
         <div className="mx-auto flex max-w-screen-lg flex-col gap-6">
           <h1 className="text-3xl font-extrabold lg:text-6xl">
-            Selamat Datang
+            Selamat Datang Para Pembaca
           </h1>
           <p className="text-balance text-muted-foreground lg:text-lg">
             Bookwise: Jelajahi Dunia dengan Setiap Halaman
