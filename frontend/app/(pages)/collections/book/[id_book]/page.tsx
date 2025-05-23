@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { BookOpen, User, Server, Calendar, HandCoins, Star, Dna } from "lucide-react";
+import { BookOpen, User, Server, Calendar, HandCoins, Star, Dna, Brain } from "lucide-react";
 import { BookReview } from "@/components/user-page/book-review";
 import { RecomendationBook } from "@/components/user-page/book-recommendation";
 import {
@@ -28,6 +28,7 @@ import { submitReview } from "@/lib/api/reviews";
 import { toast } from "sonner";
 import LoadingComponent from "@/components/loading";
 import { useRouter } from "next/navigation";
+import summarize from "@/lib/ai/summarize";
 
 export default function BookDetailPage({ params }: { params: { id_book: string } }) {
   const route = useRouter();
@@ -38,9 +39,35 @@ export default function BookDetailPage({ params }: { params: { id_book: string }
   const [visibleReviews, setVisibleReviews] = useState<number>(3);
   const { isLoading } = useAuthGuard();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [generatingSummary, setGeneratingSummary] = useState(false);
 
   const toggleExpanded = () => {
-    setIsExpanded((prev) => !prev);
+    setIsExpanded((prev: boolean) => !prev);
+  };
+
+ const generateSummary = async () => {
+    if (!bookData) return;
+
+    setGeneratingSummary(true);
+    try {
+      const bookText = `
+        Judul: ${bookData.title}
+        Pencipta: ${bookData.author}
+        Kategori: ${bookData.category}
+        Tahun Publikasi: ${bookData.year}
+        ISBN: ${bookData.isbn}
+        Bahasa: ${bookData.language}
+        Deskripsi: ${bookData.description}
+      `;
+      const generatedSummary = await summarize(bookText);
+      setSummary(generatedSummary);
+    } catch (error: any) {
+      console.error("Failed to generate summary:", error);
+      setSummary("Failed to generate summary.");
+    } finally {
+      setGeneratingSummary(false);
+    }
   };
 
   async function loadBook() {
@@ -49,7 +76,7 @@ export default function BookDetailPage({ params }: { params: { id_book: string }
       const data = await fetchBookById(id_book);
       setBookData(data || null);
       setError("");
-    } catch (err) {
+    } catch (err: any) {
       setError(`Failed to load book: ${err}`);
     } finally {
       setLoading(false);
@@ -200,21 +227,38 @@ export default function BookDetailPage({ params }: { params: { id_book: string }
               </p>
             </div>
             <Separator />
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Abstract</h2>
-              <p
-                className={`text-muted-foreground text-justify ${!isExpanded ? "line-clamp-3" : ""
-                  }`}
-              >
-                {bookData.description}
-              </p>
-              <button
-                onClick={toggleExpanded}
-                className="mt-2 text-muted-foreground underline hover:text-black"
-              >
-                {isExpanded ? "Show less" : "Show more"}
-              </button>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Abstract</h2>
+              {!summary && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={generateSummary}
+                  disabled={generatingSummary}
+                >
+                  <Brain />{generatingSummary ? "Generating..." : "Buat ringkasan dengan AI"}
+                </Button>
+              )}
             </div>
+            {summary ? (
+              <p className="text-muted-foreground text-justify">{summary}</p>
+            ) : (
+              <>
+                <p
+                  className={`text-muted-foreground text-justify ${
+                    !isExpanded ? "line-clamp-3" : ""
+                  }`}
+                >
+                  {bookData.description}
+                </p>
+                <button
+                  onClick={toggleExpanded}
+                  className="mt-2 text-muted-foreground underline hover:text-black"
+                >
+                  {isExpanded ? "Show less" : "Show more"}
+                </button>
+              </>
+            )}
             <div className="md:flex items-center justify-between">
               <div className="flex items-center text-sm text-muted-foreground mb-5 md:mb-0">
                 <BookOpen className="mr-2" size={16} />
