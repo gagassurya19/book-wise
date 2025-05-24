@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "sonner"
+import Chatbot from "@/components/Chatbot";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,6 +32,7 @@ export default function RootLayout({
       >
         {children}
         <Toaster richColors position="top-center" className="top-24"/>
+        <Chatbot />
       </body>
     </html>
   );
