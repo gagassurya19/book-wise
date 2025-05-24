@@ -17,7 +17,6 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    //    GET http://localhost:8080/api/reviews?bookId={idbook}
     @Operation(summary = "Ambil daftar review by bookId", description = "Mengambil daftar review buku berdasarkan bookId")
     @GetMapping()
     public List<ReviewDTO> getNotif(
@@ -27,7 +26,6 @@ public class ReviewController {
         return reviewService.getReview(bookId, max);
     }
 
-    //    POST http://localhost:8080/api/reviews
     @Operation(summary = "Tambah review", description = "Menambah review untuk buku")
     @PostMapping()
     public ResponseEntity<?> postReview(@RequestBody ReviewRequest reviewRequest) {

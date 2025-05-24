@@ -3,10 +3,13 @@ import { users } from "@/app/api/users/data";
 
 export async function GET(req: Request) {
   try {
-    const url = new URL(req.url);
-    const userRole = url.searchParams.get("userRole");
-
     let result;
+    let userRole = null;
+
+    if (process.env.NODE_ENV !== 'production') {
+      const url = new URL(req.url);
+      userRole = url.searchParams.get("userRole");
+    }
 
     // Jika userRole diberikan, cari berdasarkan role
     if (userRole) {

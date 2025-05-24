@@ -25,18 +25,15 @@ public class NotificationController {
         this.notificationsService = notificationsService;
     }
 
-    //    GET http://localhost:8080/api/notifications?userId=1
     @Operation(summary = "Ambil daftar notifikasi by userId", description = "Mengambil daftar notifikasi berdasarkan userId")
     @GetMapping()
     public ResponseEntity<?> getNotif(
             @RequestParam(value = "userId", required = true) String userId
     ) {
-        // Fetch notifications for the given userId
         List<Notification> notifications = notificationsService.getNotificationsByUserId(userId);
         return ResponseEntity.ok().body(notifications);
     }
 
-    //    PUT http://localhost:8080/api/notifications?notifId=1
     @Operation(summary = "Update status notifikasi by notifId", description = "Mengupdate status notifikasi read = true")
     @PutMapping()
     public ResponseEntity<?> updateStatusNotif(
@@ -50,7 +47,6 @@ public class NotificationController {
         }
     }
 
-    //    POST http://localhost:8080/api/notifications
     @Operation(summary = "Tambah notifikasi baru", description = "Menambahkan notifikasi baru untuk user tertentu")
     @PostMapping()
     public ResponseEntity<?> createNotif(
@@ -68,7 +64,6 @@ public class NotificationController {
         }
     }
 
-    //    DELETE http://localhost:8080/api/notifications/{notifId}
     @Operation(summary = "Hapus notifikasi", description = "Menghapus notifikasi berdasarkan notifId")
     @DeleteMapping("/{notifId}")
     public ResponseEntity<?> deleteNotif(

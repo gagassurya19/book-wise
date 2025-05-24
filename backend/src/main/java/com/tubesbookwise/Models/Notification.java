@@ -11,7 +11,7 @@ import java.util.UUID;
 @Setter
 @Getter
 @Entity
-@Table(name = "notifications")  // Maps the class to the "notifications" table in the database
+@Table(name = "notifications")
 public class Notification {
 
     @Id
@@ -19,26 +19,25 @@ public class Notification {
     private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)  // Foreign key to the "users" table
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "title", nullable = false)  // Title of the notification
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "message", columnDefinition = "TEXT", nullable = false)  // Message content of the notification
+    @Column(name = "message", columnDefinition = "TEXT", nullable = false)
     private String message;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)  // Enum for notification type, mapped as a string
+    @Column(name = "type", nullable = false)
     private NotificationType type;
 
-    @Column(name = "date", nullable = false)  // Timestamp when the notification was created
+    @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
     @Column(name = "`read`", nullable = false)
-    private boolean read = false;  // Default value is false
+    private boolean read = false;
 
-    // Enum for Notification Type
     public enum NotificationType {
         INFO, REMINDER, ALERT
     }

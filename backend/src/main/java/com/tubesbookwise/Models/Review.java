@@ -10,29 +10,29 @@ import java.util.UUID;
 @Setter
 @Getter
 @Entity
-@Table(name = "reviews")  // Maps the class to the "reviews" table in the database
+@Table(name = "reviews")
 public class Review {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)  // Auto generation strategy for the primary key
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;  // Primary key for the review
+    private UUID id;
 
-    @ManyToOne(fetch = FetchType.EAGER)  // Change LAZY to EAGER
-    @JoinColumn(name = "book_id", nullable = false)  // Foreign key to the "books" table
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    @ManyToOne(fetch = FetchType.EAGER)  // Change LAZY to EAGER
-    @JoinColumn(name = "author_id", nullable = false)  // Foreign key to the "users" table
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @Column(name = "date", nullable = false)  // Timestamp when the review was written
+    @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @Column(name = "rating", nullable = false)  // Rating given in the review
+    @Column(name = "rating", nullable = false)
     private double rating;
 
-    @Column(name = "content", columnDefinition = "TEXT", nullable = false)  // Content of the review (text type)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     public UUID getId() {

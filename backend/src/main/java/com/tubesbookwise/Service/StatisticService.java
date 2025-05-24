@@ -16,7 +16,6 @@ public class StatisticService {
   private final TransactionRepository transactionRepository;
   private final NotificationRepository notificationRepository;
 
-  // Constructor injection untuk semua dependensi
   public StatisticService(
           ReviewRepository reviewrepository,
           UserRepository userRepository,

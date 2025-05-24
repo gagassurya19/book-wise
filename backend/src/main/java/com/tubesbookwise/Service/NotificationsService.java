@@ -27,7 +27,6 @@ public class NotificationsService {
         return notificationRepository.findByUserId(userId);
     }
 
-    // Method to add a new notification
     public Notification addNotification(User user, String title, String message, Notification.NotificationType type) {
         Notification notification = new Notification();
         notification.setUser(user);
@@ -40,7 +39,6 @@ public class NotificationsService {
         return notificationRepository.save(notification);
     }
 
-    // Method to update notification status to "read"
     public Notification markAsRead(String notificationId) {
         Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
 
@@ -53,14 +51,11 @@ public class NotificationsService {
         }
     }
 
-    // Method to fetch a user by ID
     public User getUserById(String userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User with ID " + userId + " not found"));
     }
 
-
-    // Method to delete a notification by ID
     public void deleteNotification(String notifId) {
         if (notificationRepository.existsById(notifId)) {
             notificationRepository.deleteById(notifId);

@@ -54,18 +54,15 @@ public class BookController {
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getBookById(
             @Parameter(description = "ID of the book to retrieve", required = true) @PathVariable String id,
-            @RequestParam(value = "max", required = false) Integer max // Optional max parameter
+            @RequestParam(value = "max", required = false) Integer max
     ) {
-        // Retrieve the book by its ID
         Book book = bookService.getBookById(id)
                 .orElseThrow(() -> new ApiException("No value present", HttpStatus.NOT_FOUND));
 
-        // Fetch reviews for the book (using the getReview method from ReviewService)
-        List<ReviewDTO> reviews = reviewService.getReview(id, max); // Passing bookId and max to get reviews
+        List<ReviewDTO> reviews = reviewService.getReview(id, max);
 
-        // Convert Book object to Map and add reviews
         Map<String, Object> response = new HashMap<>(book.toMap());
-        response.put("reviews", reviews); // Add reviews to the response map
+        response.put("reviews", reviews); 
 
         return ResponseEntity.ok(response);
     }
@@ -93,15 +90,12 @@ public class BookController {
             @Parameter(description = "ID of the book to delete", required = true)
             @PathVariable String id
     ) {
-        // Check if the book exists, otherwise throw an exception
         if (!bookService.existsById(id)) {
             throw new ApiException("No value present", HttpStatus.NOT_FOUND);
         }
-
-        // Delete the book
+        
         bookService.deleteById(id);
 
-        // Return JSON response indicating success
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.OK.value());

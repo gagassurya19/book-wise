@@ -15,7 +15,6 @@ public class StatisticDashboardController {
     @Autowired
     private StatisticService statisticservice;
 
-    //    GET http://localhost:8080/api/statistic
     @Operation(summary = "Ambil data statistik", description = "Mengambil data statistik dari database")
     @GetMapping()
     public ResponseEntity<?> getStatistics(

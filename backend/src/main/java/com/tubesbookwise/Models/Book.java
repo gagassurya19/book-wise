@@ -12,8 +12,8 @@ import java.util.Map;
 @Getter
 @Entity
 @Table(name = "books", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"title"}),   // Add unique constraint for title
-        @UniqueConstraint(columnNames = {"isbn"})    // Add unique constraint for ISBN
+        @UniqueConstraint(columnNames = {"title"}),
+        @UniqueConstraint(columnNames = {"isbn"})
 })
 public class Book {
 
@@ -23,11 +23,11 @@ public class Book {
     private String id;
 
     @Setter
-    @Column(name = "title", nullable = false, length = 255)  // Ensures that title is a required field with unique constraint
+    @Column(name = "title", nullable = false, length = 255)
     private String title;
 
     @Setter
-    @Column(name = "author", nullable = false, length = 255)  // Ensures that author is a required field
+    @Column(name = "author", nullable = false, length = 255)
     private String author;
 
     @Setter
@@ -50,7 +50,7 @@ public class Book {
     @Column(name = "rack_number", length = 255)
     private String rackNumber;
 
-    @Column(name = "isbn", nullable = false, unique = true, length = 255)  // Ensures that ISBN is a required field with unique constraint
+    @Column(name = "isbn", nullable = false, unique = true, length = 255)
     private String isbn;
 
     @Column(name = "language", length = 255)
@@ -59,13 +59,13 @@ public class Book {
     @Column(name = "available_copies")
     private int availableCopies;
 
-    @Column(name = "late_fee", precision = 10, scale = 2)  // Matches DECIMAL(10,2)
+    @Column(name = "late_fee", precision = 10, scale = 2)
     private BigDecimal lateFee;
 
     @Column(name = "can_borrow", nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
-    private boolean canBorrow = true;  // Set default value
+    private boolean canBorrow = true;
 
-    @Column(name = "rating", precision = 3, scale = 2)  // Matches DECIMAL(3,2)
+    @Column(name = "rating", precision = 3, scale = 2)
     private BigDecimal rating;
 
     public Map<String, Object> toMap() {

@@ -35,22 +35,17 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    // Method to get reviews with optional filters
     public List<ReviewDTO> getReview(String bookId, Integer max) {
-        // Default to 5 reviews if max is not provided
         if (max == null) {
             max = 5;
         }
 
-        // PageRequest to limit the number of reviews and sort by date in descending order (most recent first)
         PageRequest pageRequest = PageRequest.of(0, max);
 
-        // Fetch the reviews from the repository, using pagination
         Page<Review> reviewPage = (bookId != null)
                 ? reviewRepository.findByBookId(bookId, pageRequest)
                 : reviewRepository.findAll(pageRequest);
 
-        // Map the Review entities to ReviewDTO objects
         return reviewPage.getContent().stream()
                 .map(review -> new ReviewDTO(
                         review.getId(),
@@ -68,7 +63,6 @@ public class ReviewService {
         String bookId = reviewRequest.getBookId();
         String userId = reviewRequest.getReview().getAuthorId();
 
-        // Check if the book exists
         Optional<Book> bookOptional = bookService.getBookById(bookId);
         if (bookOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -76,7 +70,6 @@ public class ReviewService {
             );
         }
 
-        // Check if the user exists
         Optional<User> userOptional = userService.findById(userId);
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -84,13 +77,11 @@ public class ReviewService {
             );
         }
 
-        // Proceed with the review logic (e.g., saving the review to the database)
         ReviewContent reviewContent = reviewRequest.getReview();
         String authorId = reviewContent.getAuthorId();
         double rating = reviewContent.getRating();
         String content = reviewContent.getContent();
 
-        // Create the Review entity
         Review review = new Review();
         review.setBook(bookOptional.get());
         review.setAuthor(userOptional.get());
@@ -98,10 +89,8 @@ public class ReviewService {
         review.setRating(rating);
         review.setContent(content);
 
-        // save to database
         reviewRepository.save(review);
 
-        // response
         Map<String, Object> response = new HashMap<>();
         response.put("bookId", bookId);
         response.put("author", authorId);

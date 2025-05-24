@@ -13,39 +13,39 @@ import java.util.UUID;
 @Table(name = "transaction_items")
 public class TransactionItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+     @Id
+     @GeneratedValue(strategy = GenerationType.UUID)
+     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id", nullable = false)
-    private Transaction transaction;
+     @ManyToOne(fetch = FetchType.LAZY)
+     @JoinColumn(name = "transaction_id", nullable = false)
+     private Transaction transaction;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+     @ManyToOne(fetch = FetchType.LAZY)
+     @JoinColumn(name = "book_id", nullable = false)
+     private Book book;
 
-    public String getId() {
-        return id;
-    }
+     public String getId() {
+         return id;
+     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+     public void setId(String id) {
+         this.id = id;
+     }
 
-    public Transaction getTransaction() {
-        return transaction;
-    }
+     public Transaction getTransaction() {
+         return transaction;
+     }
 
-    public void setTransaction(Transaction transaction) {
-        this.transaction = transaction;
-    }
+     public void setTransaction(Transaction transaction) {
+         this.transaction = transaction;
+     }
 
-    public Book getBook() {
-        return book;
-    }
+     public Book getBook() {
+         return book;
+     }
 
-    public void setBook(Book book) {
-        this.book = book;
-    }
+     public void setBook(Book book) {
+         this.book = book;
+     }
 }

@@ -113,7 +113,6 @@ public class User {
 
     private String year;
 
-    // Enum Role
     public enum Role {
         admin,
         student,
@@ -121,5 +120,4 @@ public class User {
     }
 
     public User() {}
-
 }

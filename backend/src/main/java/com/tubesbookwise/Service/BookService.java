@@ -24,7 +24,6 @@ public class BookService {
         StringBuilder jpql = new StringBuilder("SELECT b FROM Book b WHERE 1=1");
         Map<String, Object> parameters = new HashMap<>();
 
-        // Add conditions dynamically based on non-null parameters
         if (search != null && !search.isEmpty()) {
             jpql.append(" AND LOWER(b.title) LIKE :search");
             parameters.put("search", "%" + search.toLowerCase() + "%");
@@ -42,7 +41,6 @@ public class BookService {
 
         TypedQuery<Book> query = entityManager.createQuery(jpql.toString(), Book.class);
 
-        // Dynamically set parameters
         parameters.forEach(query::setParameter);
 
         return query.getResultList();
@@ -89,7 +87,6 @@ public class BookService {
 
         TypedQuery<Book> query = entityManager.createQuery(jpql, Book.class);
 
-        // Limit the number of results if 'max' is provided
         if (max != null && max > 0) {
             query.setMaxResults(max);
         }
