@@ -112,7 +112,7 @@ export default function Chatbot() {
           userMessage.toLowerCase().includes('book')) {
         
         // Get book recommendations
-        const recommendedBooks = await fetchBooksRecommendation(3);
+        const recommendedBooks = await fetchBooksRecommendation(5);
         
         setMessages(prev => [...prev, { 
           role: 'assistant', 
@@ -180,7 +180,7 @@ export default function Chatbot() {
         <div className="space-y-4">
           <ReactMarkdown>{message.content}</ReactMarkdown>
           <div className="grid grid-cols-1 gap-3">
-            {message.books.map((book) => (
+            {message.books.slice(0, 5).map((book) => (
               <Link 
                 key={book.id} 
                 href={`/collections/book/${book.id}`}
