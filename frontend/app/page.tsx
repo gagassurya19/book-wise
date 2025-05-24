@@ -15,7 +15,7 @@ export default function Home() {
         <Hero />
         <BookSwiperCard />
         <Features />
-        <Aboutus />
+        {/* <Aboutus /> */}
 
       </div>
       <Footer />
@@ -37,7 +37,7 @@ const Hero = () => {
       <div className="container text-center">
         <div className="mx-auto flex max-w-screen-lg flex-col gap-6">
           <h1 className="text-3xl font-extrabold lg:text-6xl">
-            Selamat Datang
+            Selamat Datang Para Pembaca
           </h1>
           <p className="text-balance text-muted-foreground lg:text-lg">
             Bookwise: Jelajahi Dunia dengan Setiap Halaman
@@ -151,7 +151,7 @@ const features = [
 const Features = () => {
   return (
     <section>
-      <div className="container mx-auto max-w-screen-xl text-white">
+      <div className="container mx-auto max-w-screen-xl text-white mb-40">
         <h2 className="text-3xl font-semibold md:pl-5 lg:text-4xl text-black text-center">
           Permudah Aktivitas Membacamu Dengan Beragam Fitur BookWise
         </h2>

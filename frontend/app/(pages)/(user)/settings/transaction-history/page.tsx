@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchTransactions } from "@/lib/api/transactions";
+import { fetchTransactions, fetchUpdateStatusTransaction } from "@/lib/api/transactions";
 import {
     Table,
     TableBody,
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ChevronDown, ChevronUp, Loader2, Trash2 } from 'lucide-react';
+import { ArrowLeftRight, ChevronDown, ChevronUp, Loader2, Trash2 } from 'lucide-react';
 import { Transaction } from "@/types/interfaces";
 import React from "react";
 import InvoiceComponent from "@/components/user-page/borrow/invoice";
@@ -32,6 +32,12 @@ import { toast } from "sonner";
 import { BookReviewForm } from "@/components/user-page/book-review-form";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export default function TransactionPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -43,6 +49,7 @@ export default function TransactionPage() {
     const [expandedRow, setExpandedRow] = useState<string | null>(null);
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [selectedBookId, setSelectedBookId] = useState('');
+    const [userId, setUserId] = useState('');
 
     const handleReviewSubmit = async (review: any) => {
         try {
@@ -92,6 +99,7 @@ export default function TransactionPage() {
 
     useEffect(() => {
         const userId: string = localStorage.getItem("userId") || "";
+        setUserId(userId);
         fetchData(userId);
     }, [search, type, status]);
 
@@ -229,7 +237,31 @@ export default function TransactionPage() {
                                             >
                                                 {expandedRow === transaction.id ? <ChevronUp /> : <ChevronDown />}
                                             </Button>
-
+                                            {(transaction.type.toLowerCase() == "borrow" && transaction.status.toLowerCase() != "pending" && transaction.status.toLowerCase() != "declined") && (
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button size="icon" onClick={async () => {
+                                                                try {
+                                                                    // Call API to update status
+                                                                    await fetchUpdateStatusTransaction(transaction.invoiceCode, "approved", "return");
+                                                                    toast.success(`Status updated to PENDING and RETURN for ${transaction.invoiceCode}`);
+                                                                    // Refresh the transaction list
+                                                                    await fetchData(userId);
+                                                                } catch (err) {
+                                                                    console.error("Failed to update status:", err);
+                                                                    toast.error("Failed to update status. Please try again.");
+                                                                }
+                                                            }}>
+                                                                <ArrowLeftRight />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Return this transaction</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            )}
                                         </TableCell>
                                     </TableRow>
 

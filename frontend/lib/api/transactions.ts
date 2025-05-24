@@ -225,6 +225,8 @@ export async function fetchUpdateStatusTransaction(invoiceCode: string, status: 
   let url = `${process.env.API_BASE_URL_PRODUCTION}/transactions?invoiceCode=${invoiceCode}&status=${status}`;
   if (type) {
       url += `&type=${type}`;
+  } else {
+    url += `&type=borrow`
   }
 
   const response = await fetch(url, {

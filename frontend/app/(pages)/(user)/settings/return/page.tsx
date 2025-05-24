@@ -32,6 +32,12 @@ import { toast } from "sonner";
 import { BookReviewForm } from "@/components/user-page/book-review-form";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export default function ReturnPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -158,141 +164,150 @@ export default function ReturnPage() {
                                     const isReturn = transaction.type.toLowerCase() === "return";
                                     return (dateIsPast && (isApprovedBorrow || isReturn));
                                 }).map((transaction) => (
-                                <React.Fragment key={transaction.id}>
-                                    {/* Main Row */}
-                                    <TableRow>
-                                        <TableCell>
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button variant="link" className="text-blue-500 underline">
-                                                        {transaction.invoiceCode}
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent className="max-w-4xl w-full overflow-y-auto">
-                                                    {/* <DialogHeader>
+                                    <React.Fragment key={transaction.id}>
+                                        {/* Main Row */}
+                                        <TableRow>
+                                            <TableCell>
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button variant="link" className="text-blue-500 underline">
+                                                            {transaction.invoiceCode}
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="max-w-4xl w-full overflow-y-auto">
+                                                        {/* <DialogHeader>
                                                         <DialogTitle>Transaction ID: {transaction.id}</DialogTitle>
                                                     </DialogHeader> */}
-                                                    <div className="max-h-[70vh] overflow-y-auto">
-                                                        <InvoiceComponent invoiceCode={transaction.invoiceCode} />
-                                                    </div>
-                                                </DialogContent>
-                                            </Dialog>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col">
-                                                <span className="font-medium">{transaction.user.name}</span>
-                                                <span className="text-sm text-muted-foreground">{transaction.user.email}</span>
-                                                <span className="text-sm text-muted-foreground">{transaction.user.phone}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <p>{new Date(transaction.dateRange.from).toLocaleDateString()}</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                to {new Date(transaction.dateRange.to).toLocaleDateString()}
-                                            </p>
-                                        </TableCell>
-                                        <TableCell>
-                                            <p className="font-medium">
-                                                Rp{transaction.totalFee.toLocaleString()}
-                                            </p>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span
-                                                className={`px-2 py-1 rounded-full text-xs font-semibold ${transaction.status.toLowerCase() === "approved"
-                                                    ? "bg-green-100 text-green-800"
-                                                    : transaction.status.toLowerCase() === "pending"
-                                                        ? "bg-gray-100 text-gray-800"
-                                                        : transaction.status.toLowerCase() === "declined"
-                                                            ? "bg-red-100 text-red-800"
-                                                            : "bg-yellow-100 text-yellow-800"
-                                                    }`}
-                                            >
-                                                {transaction.status.toLowerCase()}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>{transaction.type.toLowerCase() === "borrow" ? (
-                                            <Badge variant="destructive">Borrow</Badge>
-                                        ) : (
-                                            <Badge>Return</Badge>
-                                        )}</TableCell>
-                                        <TableCell>{transaction.paymentMethod}</TableCell>
-                                        <TableCell>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => toggleRow(transaction.id)}
-                                            >
-                                                {expandedRow === transaction.id ? <ChevronUp /> : <ChevronDown />}
-                                            </Button>
-                                            {(transaction.type.toLowerCase() == "return" && transaction.status.toLowerCase() == "pending") && (
-                                                    <Button size="icon" onClick={async () => {
-                                                        try {
-                                                            // Call API to update status
-                                                            await fetchUpdateStatusTransaction(transaction.invoiceCode, "approved", "return");
-                                                            toast.success(`Status updated to PENDING and RETURN for ${transaction.invoiceCode}`);
-                                                            // Refresh the transaction list
-                                                            await fetchData(userId);
-                                                        } catch (err) {
-                                                            console.error("Failed to update status:", err);
-                                                            toast.error("Failed to update status. Please try again.");
-                                                        }
-                                                    }}>
-                                                        <CircleCheckBigIcon/>
-                                                    </Button>
-                                                )}
-                                        </TableCell>
-                                    </TableRow>
-
-                                    {/* Expanded Row for Items */}
-                                    {expandedRow === transaction.id && (
-                                        <TableRow className="bg-muted/50">
-                                            <TableCell colSpan={8}>
-                                                <div className="grid grid-cols-2 gap-4 p-4">
-                                                    {transaction.items.map((item) => (
-                                                        <div className="flex flex-col p-2 border rounded bg-white max-h-fit">
-                                                            <div className="flex items-center gap-4">
-                                                                <img
-                                                                    src={item.image}
-                                                                    alt={item.title}
-                                                                    className="w-12 h-12 object-cover rounded"
-                                                                />
-                                                                <div>
-                                                                    <p className="font-medium">{item.title}</p>
-                                                                    <p className="text-sm text-muted-foreground">by {item.author}</p>
-                                                                </div>
-                                                                {(transaction.status.toLowerCase() == 'approved' || transaction.status.toLowerCase() == 'overdue') && (
-                                                                    <Button
-                                                                        onClick={() => handleShowReviewForm(item.id)}
-                                                                        type="submit"
-                                                                        className="ml-auto px-4 py-2"
-                                                                    >
-                                                                        Review
-                                                                    </Button>
-                                                                )}
-                                                            </div>
-                                                            {showReviewForm && selectedBookId === item.id && (
-                                                                <div className="mt-3">
-                                                                    <Separator className="md:block" />
-                                                                    <div className="m-4">
-                                                                        {/* <h3 className="text-lg font-semibold">Review Form</h3> */}
-                                                                        <BookReviewForm
-                                                                            bookId={selectedBookId}
-                                                                            onSubmit={(reviewData) => {
-                                                                                handleReviewSubmit(reviewData);
-                                                                            }}
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            )}
+                                                        <div className="max-h-[70vh] overflow-y-auto">
+                                                            <InvoiceComponent invoiceCode={transaction.invoiceCode} />
                                                         </div>
-
-                                                    ))}
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex flex-col">
+                                                    <span className="font-medium">{transaction.user.name}</span>
+                                                    <span className="text-sm text-muted-foreground">{transaction.user.email}</span>
+                                                    <span className="text-sm text-muted-foreground">{transaction.user.phone}</span>
                                                 </div>
                                             </TableCell>
+                                            <TableCell>
+                                                <p>{new Date(transaction.dateRange.from).toLocaleDateString()}</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    to {new Date(transaction.dateRange.to).toLocaleDateString()}
+                                                </p>
+                                            </TableCell>
+                                            <TableCell>
+                                                <p className="font-medium">
+                                                    Rp{transaction.totalFee.toLocaleString()}
+                                                </p>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span
+                                                    className={`px-2 py-1 rounded-full text-xs font-semibold ${transaction.status.toLowerCase() === "approved"
+                                                        ? "bg-green-100 text-green-800"
+                                                        : transaction.status.toLowerCase() === "pending"
+                                                            ? "bg-gray-100 text-gray-800"
+                                                            : transaction.status.toLowerCase() === "declined"
+                                                                ? "bg-red-100 text-red-800"
+                                                                : "bg-yellow-100 text-yellow-800"
+                                                        }`}
+                                                >
+                                                    {transaction.status.toLowerCase()}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell>{transaction.type.toLowerCase() === "borrow" ? (
+                                                <Badge variant="destructive">Borrow</Badge>
+                                            ) : (
+                                                <Badge>Return</Badge>
+                                            )}</TableCell>
+                                            <TableCell>{transaction.paymentMethod}</TableCell>
+                                            <TableCell>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => toggleRow(transaction.id)}
+                                                >
+                                                    {expandedRow === transaction.id ? <ChevronUp /> : <ChevronDown />}
+                                                </Button>
+                                                {(transaction.type.toLowerCase() == "return" && transaction.status.toLowerCase() == "pending") && (
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button size="icon" onClick={async () => {
+                                                                    try {
+                                                                        // Call API to update status
+                                                                        await fetchUpdateStatusTransaction(transaction.invoiceCode, "approved", "return");
+                                                                        toast.success(`Status updated to PENDING and RETURN for ${transaction.invoiceCode}. Please check your pengembalian page`);
+                                                                        // Refresh the transaction list
+                                                                        await fetchData(userId);
+                                                                    } catch (err) {
+                                                                        console.error("Failed to update status:", err);
+                                                                        toast.error("Failed to update status. Please try again.");
+                                                                    }
+                                                                }}>
+                                                                    <CircleCheckBigIcon />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Approve return</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                )}
+                                            </TableCell>
                                         </TableRow>
-                                    )}
-                                </React.Fragment>
-                            ))}
+
+                                        {/* Expanded Row for Items */}
+                                        {expandedRow === transaction.id && (
+                                            <TableRow className="bg-muted/50">
+                                                <TableCell colSpan={8}>
+                                                    <div className="grid grid-cols-2 gap-4 p-4">
+                                                        {transaction.items.map((item) => (
+                                                            <div className="flex flex-col p-2 border rounded bg-white max-h-fit">
+                                                                <div className="flex items-center gap-4">
+                                                                    <img
+                                                                        src={item.image}
+                                                                        alt={item.title}
+                                                                        className="w-12 h-12 object-cover rounded"
+                                                                    />
+                                                                    <div>
+                                                                        <p className="font-medium">{item.title}</p>
+                                                                        <p className="text-sm text-muted-foreground">by {item.author}</p>
+                                                                    </div>
+                                                                    {(transaction.status.toLowerCase() == 'approved' || transaction.status.toLowerCase() == 'overdue') && (
+                                                                        <Button
+                                                                            onClick={() => handleShowReviewForm(item.id)}
+                                                                            type="submit"
+                                                                            className="ml-auto px-4 py-2"
+                                                                        >
+                                                                            Review
+                                                                        </Button>
+                                                                    )}
+                                                                </div>
+                                                                {showReviewForm && selectedBookId === item.id && (
+                                                                    <div className="mt-3">
+                                                                        <Separator className="md:block" />
+                                                                        <div className="m-4">
+                                                                            {/* <h3 className="text-lg font-semibold">Review Form</h3> */}
+                                                                            <BookReviewForm
+                                                                                bookId={selectedBookId}
+                                                                                onSubmit={(reviewData) => {
+                                                                                    handleReviewSubmit(reviewData);
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                        ))}
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </React.Fragment>
+                                ))}
                         </TableBody>
                     </Table>
                 )}

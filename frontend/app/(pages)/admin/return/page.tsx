@@ -29,6 +29,12 @@ import React from "react";
 import InvoiceComponent from "@/components/user-page/borrow/invoice";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export default function ReturnPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -219,39 +225,60 @@ export default function ReturnPage() {
                                                     {expandedRow === transaction.id ? <ChevronUp /> : <ChevronDown />}
                                                 </Button>
                                                 {(transaction.type.toLowerCase() == "borrow" && transaction.status.toLowerCase() != "pending") && (
-                                                    <Button size="icon" onClick={async () => {
-                                                        try {
-                                                            // Call API to update status
-                                                            await fetchUpdateStatusTransaction(transaction.invoiceCode, "pending", "return");
-                                                            toast.success(`Status updated to PENDING and RETURN for ${transaction.invoiceCode}`);
-                                                            // Refresh the transaction list
-                                                            await fetchData();
-                                                        } catch (err) {
-                                                            console.error("Failed to update status:", err);
-                                                            toast.error("Failed to update status. Please try again.");
-                                                        }
-                                                    }}>
-                                                        <ArrowLeftRight/>
-                                                    </Button>
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button size="icon" onClick={async () => {
+                                                                    try {
+                                                                        // Call API to update status
+                                                                        await fetchUpdateStatusTransaction(transaction.invoiceCode, "pending", "return");
+                                                                        toast.success(`Status updated to PENDING and RETURN for ${transaction.invoiceCode}`);
+                                                                        // Refresh the transaction list
+                                                                        await fetchData();
+                                                                    } catch (err) {
+                                                                        console.error("Failed to update status:", err);
+                                                                        toast.error("Failed to update status. Please try again.");
+                                                                    }
+                                                                }}>
+                                                                    <ArrowLeftRight />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Make return approval to user</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                 )}
                                                 {(transaction.type.toLowerCase() == "return" && transaction.status.toLowerCase() == "approved") && (
-                                                    <Button size="icon" variant='destructive' onClick={async () => {
-                                                        try {
-                                                            // Call API to update status
-                                                            await fetchUpdateStatusTransaction(transaction.invoiceCode, "declined", "return");
-                                                            toast.success(`Status updated to DECLINED and RETURN for ${transaction.invoiceCode}`);
-                                                            // Refresh the transaction list
-                                                            await fetchData();
-                                                        } catch (err) {
-                                                            console.error("Failed to update status:", err);
-                                                            toast.error("Failed to update status. Please try again.");
-                                                        }
-                                                    }}>
-                                                        <CircleXIcon/>
-                                                    </Button>
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button size="icon" variant='destructive' onClick={async () => {
+                                                                    try {
+                                                                        // Call API to update status
+                                                                        await fetchUpdateStatusTransaction(transaction.invoiceCode, "declined", "return");
+                                                                        toast.success(`Status updated to DECLINED and RETURN for ${transaction.invoiceCode}`);
+                                                                        // Refresh the transaction list
+                                                                        await fetchData();
+                                                                    } catch (err) {
+                                                                        console.error("Failed to update status:", err);
+                                                                        toast.error("Failed to update status. Please try again.");
+                                                                    }
+                                                                }}>
+                                                                    <CircleXIcon />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Declined the return from user</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                 )}
                                                 {(transaction.type.toLowerCase() == "return" && transaction.status.toLowerCase() == "declined") && (
-                                                    <Button size="icon" variant='destructive' onClick={async () => {
+                                                    <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                        <Button size="icon" variant='destructive' onClick={async () => {
                                                         toast.info(
                                                             <div className="flex flex-col">
                                                                 <span className="font-medium">Nama: {transaction.user.name}</span>
@@ -260,8 +287,14 @@ export default function ReturnPage() {
                                                             </div>
                                                         )
                                                     }}>
-                                                        <Phone/>
+                                                        <Phone />
                                                     </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Contact the user to return the book</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
                                                 )}
                                             </TableCell>
                                         </TableRow>
