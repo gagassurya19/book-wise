@@ -54,7 +54,7 @@ export default function Chatbot() {
   const [books, setBooks] = useState<SimpleBook[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
   useEffect(() => {
     // Load books when component mounts

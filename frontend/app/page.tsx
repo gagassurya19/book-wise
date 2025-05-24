@@ -15,7 +15,7 @@ export default function Home() {
         <Hero />
         <BookSwiperCard />
         <Features />
-        <Aboutus />
+        {/* <Aboutus /> */}
 
       </div>
       <Footer />
@@ -151,7 +151,7 @@ const features = [
 const Features = () => {
   return (
     <section>
-      <div className="container mx-auto max-w-screen-xl text-white">
+      <div className="container mx-auto max-w-screen-xl text-white mb-40">
         <h2 className="text-3xl font-semibold md:pl-5 lg:text-4xl text-black text-center">
           Permudah Aktivitas Membacamu Dengan Beragam Fitur BookWise
         </h2>
